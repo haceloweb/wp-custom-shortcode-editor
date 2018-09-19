@@ -8,7 +8,8 @@ class TinyMCE_Plus {
     function __construct() {
 
         if ( is_admin() ) {
-		    add_action( 'init', array(  $this, 'setup_tinymce_plugin' ) );
+			add_action( 'init', array(  $this, 'setup_tinymce_plugin' ) );
+			add_action( 'admin_enqueue_scripts', array(  $this, 'insert_shortcodes_json_obj' ), 1 );
 		}
 
     }
@@ -52,9 +53,16 @@ class TinyMCE_Plus {
 	* @return array Modified array of registered TinyMCE Buttons
 	*/
 	function add_tinymce_toolbar_button( $buttons ) {
-	 
+
+		foreach(Shortcode_Plus::list_shortcodes() as $shortcode){
+			array_push( $buttons, '|', 'tinymcs_plus_'.$shortcode["slug"] );
+		}
 		array_push( $buttons, '|', 'tinymcs_plus' );
 		return $buttons;
 	}
- 
+
+	function insert_shortcodes_json_obj(){ 
+		wp_add_inline_script( 'jquery','var shortcodesData = '.json_encode(Shortcode_Plus::list_shortcodes()).';', 'before' );
+		//echo '<script type="text/javascript"> var shortcodesData = '.json_encode(Shortcode_Plus::list_shortcodes()).'; </script>';
+  	}
 }
