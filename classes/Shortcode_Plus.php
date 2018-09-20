@@ -41,6 +41,7 @@ class Shortcode_Plus {
                 "slug" => get_post_meta( $shortcode_ID, 'shortcode_slug', true),
                 "text" => get_post_meta( $shortcode_ID, 'shortcode_btn_text', true),
                 "tooltip" => get_post_meta( $shortcode_ID, 'shortcode_btn_tooltip', true),
+                "close" => get_post_meta( $shortcode_ID, 'shortcode_close_tag', true),
                 "params" => get_post_meta( $shortcode_ID, 'shortcode_params', true),
             ));
         }
@@ -80,6 +81,7 @@ class Shortcode_Plus {
         $shortcode_slug = get_post_meta( $post->ID, 'shortcode_slug', true);
         $shortcode_btn_text = get_post_meta( $post->ID, 'shortcode_btn_text', true);
         $shortcode_btn_tooltip = get_post_meta( $post->ID, 'shortcode_btn_tooltip', true);
+        $shortcode_close_tag = get_post_meta( $post->ID, 'shortcode_close_tag', true);
         
         include( TINYMCE_PLUS_PATH . '/templates/shortcode_data_edit.php' );
     }
@@ -103,6 +105,7 @@ class Shortcode_Plus {
         $this->update_meta_field($post_id, 'shortcode_slug');
         $this->update_meta_field($post_id, 'shortcode_btn_text');
         $this->update_meta_field($post_id, 'shortcode_btn_tooltip');
+        $this->update_meta_field($post_id, 'shortcode_close_tag');
 
         //Shortcode Parameters Fields
         $this->update_meta_field($post_id, 'shortcode_params');

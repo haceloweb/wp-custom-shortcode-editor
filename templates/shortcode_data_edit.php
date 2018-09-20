@@ -24,4 +24,12 @@
             <input type="text" name="shortcode_btn_tooltip" value="<?= $shortcode_btn_tooltip ?>">
         </td>
     </tr>
+    <tr>
+        <td>
+            <label for="shortcode_close_tag">Has close tag (true or false):&nbsp;&nbsp;</label>
+        </td>
+        <td>
+            <input type="text" name="shortcode_close_tag" value="<?= $shortcode_close_tag ?>">
+        </td>
+    </tr>
 </table>

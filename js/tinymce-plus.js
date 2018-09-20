@@ -22,41 +22,61 @@
             });
 
             editor.addCommand('tinymcs_plus_cmd_'+ shortcode["slug"], function() {
-                var win = editor.windowManager.open({
-                    title: ' Configuration',
-                    body: fields,
-                    buttons: [
-                        {
-                            text: "Ok",
-                            subtype: "primary",
-                            onclick: function() {
-                                win.submit();
+
+            	if(fields.length > 0){
+                    var win = editor.windowManager.open({
+                        title: ' Configuration',
+                        body: fields,
+                        buttons: [
+                            {
+                                text: "Ok",
+                                subtype: "primary",
+                                onclick: function() {
+                                    win.submit();
+                                }
+                            },
+                            {
+                                text: "Cancel",
+                                onclick: function() {
+                                    win.close();
+                                }
                             }
-                        },
-                        {
-                            text: "Cancel",
-                            onclick: function() {
-                                win.close();
+                        ],
+                        onsubmit: function(e){
+                            var params = [];
+
+                            $.each( shortcode.params, function( key, param ) {
+                                if( e.data[param["code"]].length > 0 ) {
+                                    params.push(param["code"] + '="' + e.data[param["code"]] + '"');
+                                }
+                            });
+
+                            if( params.length > 0 ) {
+                                paramsString = ' ' + params.join(' ');
+                            }
+
+                            if(shortcode["close"] == "true"){
+                                var returnText = '[' + shortcode["slug"] + ' ' + paramsString + ']<br><br>[/' + shortcode["slug"] + ']';
+                                editor.execCommand('mceInsertContent', 0, returnText);
+                            }
+                            else{
+                                var returnText = '[' + shortcode["slug"] + ' ' + paramsString + ']';
+                                editor.execCommand('mceInsertContent', 0, returnText);
                             }
                         }
-                    ],
-                    onsubmit: function(e){
-                        var params = [];
-
-                        $.each( shortcode.params, function( key, param ) {
-                            if( e.data[param["code"]].length > 0 ) {
-                                params.push(param["code"] + '="' + e.data[param["code"]] + '"');
-                            }
-                        });
-
-                        if( params.length > 0 ) {
-                            paramsString = ' ' + params.join(' ');
-                        }
-
-                        var returnText = '[' + shortcode["slug"] + ' ' + paramsString + ']';
+                    });
+				}
+				else{
+                    if(shortcode["close"] == "true"){
+                        var returnText = '[' + shortcode["slug"] + ']<br><br>[/' + shortcode["slug"] + ']';
                         editor.execCommand('mceInsertContent', 0, returnText);
                     }
-                });
+                    else{
+                        var returnText = '[' + shortcode["slug"] + ']';
+                        editor.execCommand('mceInsertContent', 0, returnText);
+                    }
+				}
+
             });
 
 		});
