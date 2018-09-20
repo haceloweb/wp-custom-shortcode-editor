@@ -9,10 +9,15 @@ class TinyMCE_Plus {
 
         if ( is_admin() ) {
 			add_action( 'init', array(  $this, 'setup_tinymce_plugin' ) );
-			add_action( 'admin_enqueue_scripts', array(  $this, 'insert_shortcodes_json_obj' ), 1 );
 		}
 
     }
+
+    function tinymce_plus_settings( $settings ) {
+        $settings["shortcodes_data"] = json_encode(Shortcode_Plus::list_shortcodes());
+        return $settings;
+    }
+
 
     /**
 	* Check if the current user can edit Posts or Pages, and is using the Visual Editor
@@ -28,6 +33,7 @@ class TinyMCE_Plus {
 		if ( get_user_option( 'rich_editing' ) !== 'true' ) {return;}
 		 
 		// Setup some filters
+        add_filter( 'tiny_mce_before_init', array( &$this, 'tinymce_plus_settings' ) );
 		add_filter( 'mce_external_plugins', array( &$this, 'add_tinymce_plugin' ) );
 		add_filter( 'mce_buttons', array( &$this, 'add_tinymce_toolbar_button' ) );
          
@@ -54,15 +60,9 @@ class TinyMCE_Plus {
 	*/
 	function add_tinymce_toolbar_button( $buttons ) {
 
-		foreach(Shortcode_Plus::list_shortcodes() as $shortcode){
-			array_push( $buttons, '|', 'tinymcs_plus_'.$shortcode["slug"] );
-		}
-		array_push( $buttons, '|', 'tinymcs_plus' );
+	    foreach(Shortcode_Plus::list_shortcodes() as $shortcode){
+            array_push( $buttons, '|', 'tinymcs_plus_' . $shortcode["slug"] );
+        }
 		return $buttons;
 	}
-
-	function insert_shortcodes_json_obj(){ 
-		wp_add_inline_script( 'jquery','var shortcodesData = '.json_encode(Shortcode_Plus::list_shortcodes()).';', 'before' );
-		//echo '<script type="text/javascript"> var shortcodesData = '.json_encode(Shortcode_Plus::list_shortcodes()).'; </script>';
-  	}
 }
